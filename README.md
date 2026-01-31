@@ -76,13 +76,13 @@ task-manager-v2/
 - **Vanilla JavaScript** - Component-based architecture
 - **Google Fonts** - Syne & DM Sans typography
 
-### Backend (Unchanged)
+### Backend
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
 - **JWT** - Authentication
 - **bcrypt** - Password hashing
 
-### Database (Unchanged)
+### Database
 - **MySQL** - Relational database
 
 
