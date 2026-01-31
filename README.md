@@ -21,7 +21,7 @@ A modern, feature-rich task management application with a beautiful UI and advan
 
 ```
 task-manager-v2/
-├── backend/                    # Node.js backend (reuse from v1)
+├── backend/                    # Node.js backend
 │   ├── config/
 │   ├── middleware/
 │   ├── routes/
@@ -30,7 +30,7 @@ task-manager-v2/
 │   ├── server.js
 │   └── package.json
 │
-├── database/                   # MySQL database (reuse from v1)
+├── database/                   # MySQL database
 │   ├── schema.sql
 │   └── README.md
 │
@@ -66,7 +66,7 @@ task-manager-v2/
         ├── api.js              # API communication
         ├── storage.js          # LocalStorage management
         └── helpers.js          # Helper functions
-
+```
 
 ## 🛠️ Tech Stack
 
