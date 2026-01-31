@@ -1,0 +1,28 @@
+# Database Setup Instructions
+
+## Prerequisites
+- MySQL Server installed and running
+- MySQL command-line client or MySQL Workbench
+
+## Setup Steps
+
+1. Start MySQL server
+2. Run the schema file:
+   ```bash
+   mysql -u root -p < schema.sql
+   ```
+
+## Default Admin Credentials
+- Username: admin
+- Email: admin@taskmanager.com
+- Password: admin123
+- Role: admin
+
+## Database Configuration
+- Database Name: task_manager
+- Tables: users, tasks
+- Default Port: 3306
+
+## Notes
+- The admin password is hashed using bcrypt
+- You'll need to update the backend/.env file with your MySQL credentials

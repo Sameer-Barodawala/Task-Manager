@@ -1,0 +1,87 @@
+:root {
+    /* Dark Theme (Default) */
+    --bg-primary: #0a0e27;
+    --bg-secondary: #141b3d;
+    --bg-tertiary: #1e2749;
+    --bg-elevated: #252e54;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #b8c1ec;
+    --text-tertiary: #7982ab;
+    
+    --accent-primary: #ff6b9d;
+    --accent-secondary: #4ecdc4;
+    --accent-tertiary: #ffd93d;
+    --accent-gradient: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+    
+    --success: #6bcf7f;
+    --warning: #ffd93d;
+    --danger: #ff6b6b;
+    --info: #4ecdc4;
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(255, 107, 157, 0.3);
+    
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-xl: 28px;
+    
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+    
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    --blur-glass: blur(12px);
+}
+
+[data-theme="light"] {
+    --bg-primary: #f8f9ff;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f0f2f8;
+    --bg-elevated: #ffffff;
+    
+    --text-primary: #1a1f36;
+    --text-secondary: #4a5568;
+    --text-tertiary: #718096;
+    
+    --accent-primary: #ff6b9d;
+    --accent-secondary: #4ecdc4;
+    --accent-tertiary: #ffd93d;
+    --accent-gradient: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+    
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --shadow-glow: 0 0 20px rgba(255, 107, 157, 0.2);
+}
+
+/* Priority Colors */
+.priority-high {
+    --priority-color: var(--danger);
+}
+
+.priority-medium {
+    --priority-color: var(--warning);
+}
+
+.priority-low {
+    --priority-color: var(--info);
+}
+
+/* Status Colors */
+.status-pending {
+    --status-color: var(--text-tertiary);
+}
+
+.status-in_progress {
+    --status-color: var(--accent-secondary);
+}
+
+.status-completed {
+    --status-color: var(--success);
+}
