@@ -1,6 +1,6 @@
 // API Utility
 const API = {
-    baseURL: 'http://localhost:3000/api',
+    baseURL: window.CONFIG?.API_BASE_URL || 'http://localhost:3000/api',
 
     async request(endpoint, options = {}) {
         const token = Storage.getToken();
