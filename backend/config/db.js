@@ -14,14 +14,16 @@ const pool = mysql.createPool({
   }
 });
 
-pool.getConnection()
+const promisePool = pool.promise();
+
+// Test DB connection
+promisePool.getConnection()
   .then(conn => {
-      console.log('✅ MySQL connected successfully');
-      conn.release();
+    console.log('✅ MySQL connected successfully');
+    conn.release();
   })
   .catch(err => {
-      console.error('❌ MySQL connection failed:', err);
+    console.error('❌ MySQL connection failed:', err);
   });
-const promisePool = pool.promise();
 
 module.exports = promisePool;
