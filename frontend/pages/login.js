@@ -26,14 +26,19 @@ class LoginPage {
 
                             <div class="form-group">
                                 <label class="form-label">Password</label>
-                                <input 
-                                    type="password" 
-                                    class="form-input" 
-                                    id="loginPassword" 
-                                    placeholder="Enter your password"
-                                    required
-                                    autocomplete="current-password"
-                                />
+                                <div class="password-input-wrapper">
+                                    <input 
+                                        type="password" 
+                                        class="form-input" 
+                                        id="loginPassword" 
+                                        placeholder="Enter your password"
+                                        required
+                                        autocomplete="current-password"
+                                    />
+                                    <button type="button" class="password-toggle" id="toggleLoginPassword">
+                                        <span class="eye-icon">👁️</span>
+                                    </button>
+                                </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
@@ -77,6 +82,21 @@ class LoginPage {
             registerLink.addEventListener('click', (e) => {
                 e.preventDefault();
                 window.app.showPage('register');
+            });
+        }
+
+        // Password visibility toggle
+        const togglePassword = document.getElementById('toggleLoginPassword');
+        const passwordInput = document.getElementById('loginPassword');
+        if (togglePassword && passwordInput) {
+            togglePassword.addEventListener('click', () => {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                
+                const eyeIcon = togglePassword.querySelector('.eye-icon');
+                if (eyeIcon) {
+                    eyeIcon.textContent = type === 'password' ? '👁️' : '🙈';
+                }
             });
         }
     }
