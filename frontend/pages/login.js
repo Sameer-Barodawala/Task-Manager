@@ -60,7 +60,7 @@ class LoginPage {
                         <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-md); font-size: 0.85rem;">
                             <strong>Demo Credentials:</strong><br>
                             Admin: admin / admin123<br>
-                            User: demo / demo123
+                            
                         </div>
                     </div>
                 </div>
