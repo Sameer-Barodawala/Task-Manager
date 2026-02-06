@@ -4,12 +4,11 @@ class LoadingScreen {
         this.maxRetries = 30; // 30 retries = ~60 seconds (2 sec intervals)
         this.retryCount = 0;
         this.checkInterval = 2000; // Check every 2 seconds
-        this.isShown = false;
     }
 
     render() {
         return `
-            <div id="loadingScreen" class="loading-screen active">
+            <div id="loadingScreen" class="loading-screen">
                 <div class="loading-container">
                     <!-- Animated Logo -->
                     <div class="loading-logo">
@@ -45,11 +44,6 @@ class LoadingScreen {
                     <button class="btn btn-primary" id="retryBtn" style="display: none; margin-top: 2rem;">
                         🔄 Retry Connection
                     </button>
-                    
-                    <!-- Skip Button -->
-                    <button class="btn btn-ghost" id="skipBtn" style="margin-top: 1rem;">
-                        ⏭️ Skip and Continue Anyway
-                    </button>
                 </div>
 
                 <!-- Particle Animation Background -->
@@ -58,18 +52,6 @@ class LoadingScreen {
                 </div>
             </div>
         `;
-    }
-
-    getApiBaseUrl() {
-        // Try to get API URL from config or API object
-        if (typeof API_BASE_URL !== 'undefined') {
-            return API_BASE_URL;
-        }
-        if (typeof API !== 'undefined' && API.baseURL) {
-            return API.baseURL;
-        }
-        // Fallback to localhost
-        return 'http://localhost:3000/api';
     }
 
     async checkBackend() {
@@ -130,31 +112,20 @@ class LoadingScreen {
                     tipIndex++;
                 }
 
-                const apiUrl = this.getApiBaseUrl();
-                const healthUrl = `${apiUrl}/health`;
-                
-                console.log(`[Loading] Attempt ${this.retryCount + 1}/${this.maxRetries}`);
-                console.log(`[Loading] Checking: ${healthUrl}`);
+                console.log(`Loading: Checking backend (attempt ${this.retryCount + 1}/${this.maxRetries})`);
 
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-                const response = await fetch(healthUrl, {
-                    method: 'GET',
-                    signal: controller.signal,
-                    mode: 'cors',
-                    headers: {
-                        'Accept': 'application/json'
-                    }
+                const response = await fetch(`${API.baseURL}/health`, {
+                    signal: controller.signal
                 });
 
                 clearTimeout(timeoutId);
 
-                console.log(`[Loading] Response status: ${response.status}`);
-
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('[Loading] Backend connected successfully:', data);
+                    console.log('Backend connected successfully:', data);
 
                     // Success animation
                     if (progressEl) {
@@ -168,34 +139,20 @@ class LoadingScreen {
                     }
 
                     // Wait a moment to show success
-                    await new Promise(resolve => setTimeout(resolve, 800));
+                    await new Promise(resolve => setTimeout(resolve, 500));
 
                     return true;
                 } else {
-                    console.warn(`[Loading] Backend returned status ${response.status}`);
-                    throw new Error(`Backend returned ${response.status}`);
+                    throw new Error('Backend not ready');
                 }
 
             } catch (error) {
-                console.error(`[Loading] Check failed:`, error.message);
-                
-                // Show specific error after a few attempts
-                if (this.retryCount > 3) {
-                    const tipsEl = document.getElementById('loadingTips');
-                    if (tipsEl) {
-                        tipsEl.innerHTML = `
-                            <p style="color: var(--warning);">
-                                ⚠️ Having trouble connecting...<br>
-                                Check console (F12) for details
-                            </p>
-                        `;
-                    }
-                }
+                console.log('Backend check failed:', error.message);
 
                 this.retryCount++;
 
                 if (this.retryCount >= this.maxRetries) {
-                    this.showError(error.message);
+                    this.showError();
                     return false;
                 }
 
@@ -214,13 +171,11 @@ class LoadingScreen {
         return success;
     }
 
-    showError(errorDetails = '') {
+    showError() {
         const messageEl = document.getElementById('loadingMessage');
         const progressTextEl = document.getElementById('progressText');
         const retryBtn = document.getElementById('retryBtn');
         const tipsEl = document.getElementById('loadingTips');
-
-        const apiUrl = this.getApiBaseUrl();
 
         if (messageEl) {
             messageEl.innerHTML = '❌ Unable to connect to server';
@@ -234,55 +189,27 @@ class LoadingScreen {
             retryBtn.onclick = () => {
                 retryBtn.style.display = 'none';
                 this.retryCount = 0;
-                
-                // Reset UI
-                const messageEl = document.getElementById('loadingMessage');
-                if (messageEl) {
-                    messageEl.style.color = '';
-                }
-                
                 this.checkBackend();
             };
         }
         if (tipsEl) {
             tipsEl.innerHTML = `
-                <p style="color: var(--danger); font-size: 0.9rem;">
-                    ⚠️ Cannot reach backend server<br>
-                    <br>
-                    <strong>Trying to connect to:</strong><br>
-                    <code style="font-size: 0.8rem; background: rgba(0,0,0,0.3); padding: 0.5rem; border-radius: 4px; display: block; margin: 0.5rem 0; word-break: break-all;">${apiUrl}/health</code>
-                    <br>
-                    <strong>Possible issues:</strong><br>
-                    • Backend URL incorrect in config.js<br>
-                    • Backend server is down<br>
-                    • CORS not configured<br>
-                    <br>
-                    Check browser console (F12) for details
+                <p style="color: var(--danger);">
+                    ⚠️ The server might be sleeping (free hosting).<br>
+                    Please wait a moment and try again.
                 </p>
             `;
         }
     }
 
     show() {
-        if (this.isShown) return;
-        
         const existingScreen = document.getElementById('loadingScreen');
         if (!existingScreen) {
-            document.body.insertAdjacentHTML('afterbegin', this.render());
-            
-            // Add skip button handler
-            const skipBtn = document.getElementById('skipBtn');
-            if (skipBtn) {
-                skipBtn.addEventListener('click', () => {
-                    console.log('User skipped loading screen');
-                    this.hide();
-                });
-            }
+            document.body.insertAdjacentHTML('beforeend', this.render());
         }
         const screen = document.getElementById('loadingScreen');
         if (screen) {
             screen.classList.add('active');
-            this.isShown = true;
         }
     }
 
@@ -292,23 +219,12 @@ class LoadingScreen {
             screen.classList.add('fade-out');
             setTimeout(() => {
                 screen.remove();
-                this.isShown = false;
             }, 500);
         }
     }
 
     async init() {
-        console.log('Loading screen initialized');
         this.show();
         await this.checkBackend();
     }
-}
-
-// Initialize loading screen immediately when script loads
-if (typeof window !== 'undefined') {
-    window.addEventListener('DOMContentLoaded', () => {
-        console.log('DOM loaded, showing loading screen');
-        const loadingScreen = new LoadingScreen();
-        loadingScreen.show();
-    });
 }
