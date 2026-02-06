@@ -4,11 +4,12 @@ class LoadingScreen {
         this.maxRetries = 30; // 30 retries = ~60 seconds (2 sec intervals)
         this.retryCount = 0;
         this.checkInterval = 2000; // Check every 2 seconds
+        this.isShown = false;
     }
 
     render() {
         return `
-            <div id="loadingScreen" class="loading-screen">
+            <div id="loadingScreen" class="loading-screen active">
                 <div class="loading-container">
                     <!-- Animated Logo -->
                     <div class="loading-logo">
@@ -52,6 +53,18 @@ class LoadingScreen {
                 </div>
             </div>
         `;
+    }
+
+    getApiBaseUrl() {
+        // Try to get API URL from config or API object
+        if (typeof API_BASE_URL !== 'undefined') {
+            return API_BASE_URL;
+        }
+        if (typeof API !== 'undefined' && API.baseURL) {
+            return API.baseURL;
+        }
+        // Fallback to localhost
+        return 'http://localhost:3000/api';
     }
 
     async checkBackend() {
@@ -114,10 +127,13 @@ class LoadingScreen {
 
                 console.log(`Loading: Checking backend (attempt ${this.retryCount + 1}/${this.maxRetries})`);
 
+                const apiUrl = this.getApiBaseUrl();
+                console.log('API URL:', apiUrl);
+
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-                const response = await fetch(`${API.baseURL}/health`, {
+                const response = await fetch(`${apiUrl}/health`, {
                     signal: controller.signal
                 });
 
@@ -189,6 +205,13 @@ class LoadingScreen {
             retryBtn.onclick = () => {
                 retryBtn.style.display = 'none';
                 this.retryCount = 0;
+                
+                // Reset UI
+                const messageEl = document.getElementById('loadingMessage');
+                if (messageEl) {
+                    messageEl.style.color = '';
+                }
+                
                 this.checkBackend();
             };
         }
@@ -203,13 +226,16 @@ class LoadingScreen {
     }
 
     show() {
+        if (this.isShown) return;
+        
         const existingScreen = document.getElementById('loadingScreen');
         if (!existingScreen) {
-            document.body.insertAdjacentHTML('beforeend', this.render());
+            document.body.insertAdjacentHTML('afterbegin', this.render());
         }
         const screen = document.getElementById('loadingScreen');
         if (screen) {
             screen.classList.add('active');
+            this.isShown = true;
         }
     }
 
@@ -219,12 +245,23 @@ class LoadingScreen {
             screen.classList.add('fade-out');
             setTimeout(() => {
                 screen.remove();
+                this.isShown = false;
             }, 500);
         }
     }
 
     async init() {
+        console.log('Loading screen initialized');
         this.show();
         await this.checkBackend();
     }
+}
+
+// Initialize loading screen immediately when script loads
+if (typeof window !== 'undefined') {
+    window.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM loaded, showing loading screen');
+        const loadingScreen = new LoadingScreen();
+        loadingScreen.show();
+    });
 }
