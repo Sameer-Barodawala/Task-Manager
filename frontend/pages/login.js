@@ -11,6 +11,10 @@ class LoginPage {
                             <p class="auth-subtitle">Welcome back! Let's get productive.</p>
                         </div>
 
+                        <div class="auth-notice">
+    ⏳                      <strong>Note:</strong> Initial login may take up to <strong>60 seconds</strong> while the server initializes from an idle state.
+                        </div>
+
                         <form id="loginForm">
                             <div class="form-group">
                                 <label class="form-label">Username</label>
